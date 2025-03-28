@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot for Mothers</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f7f7f7; }
+        #chat-container { width: 400px; margin: 20px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+        #chatbox { height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; }
+        #chat-input-container { display: flex; margin-top: 10px; }
+        #userInput { flex: 1; padding: 5px; border: 1px solid #ddd; border-radius: 5px; }
+        #sendBtn { margin-left: 5px; padding: 5px 10px; background: #6a1b9a; color: white; border: none; cursor: pointer; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>Welcome to the MammaBliss Chatbot for Guardians.</h1>
+    <p>Chat with our AI assistant to learn how to support new mothers.</p>
+
+    <div id="chat-container">
+        <div id="chatbox"></div>
+        <div id="chat-input-container">
+            <input type="text" id="userInput" placeholder="Type a message...">
+            <button id="sendBtn">Send</button>
+        </div>
+    </div>
+
+    <footer>
+        <a href="index.html">Back to Home</a>
+    </footer>
+
+    <script>
+        document.getElementById("sendBtn").addEventListener("click", function () {
+            let userText = document.getElementById("userInput").value;
+            if (userText.trim() === "") return;
+
+            let chatbox = document.getElementById("chatbox");
+            chatbox.innerHTML += "<p><b>You:</b> " + userText + "</p>";
+
+            fetch("http://127.0.0.1:5000/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userText })
+            })
+            .then(response => response.json())
+            .then(data => {
+                chatbox.innerHTML += "<p><b>Bot:</b> " + data.response + "</p>";
+                chatbox.scrollTop = chatbox.scrollHeight;
+            })
+            .catch(error => console.error("Error:", error));
+
+            document.getElementById("userInput").value = "";
+        });
+    </script>
+
+</body>
+</html>
